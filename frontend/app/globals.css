@@ -1,0 +1,318 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --font-plex-sans: "IBM Plex Sans", "Segoe UI", Arial, sans-serif;
+  --font-plex-mono: "IBM Plex Mono", Consolas, "Courier New", monospace;
+}
+html {
+  scroll-padding-top: 5rem;
+}
+
+body {
+  background-color: #13161a;
+  color: #edf1f5;
+}
+
+body[data-theme="light"] {
+  color-scheme: light;
+  background-color: #e9eff6;
+  color: #172033;
+}
+
+body[data-theme="light"] .bg-ink-950,
+body[data-theme="light"] [class~="bg-ink-950/90"] {
+  background-color: #f8fafc !important;
+}
+
+body[data-theme="light"] .bg-ink-900 {
+  background-color: #ffffff !important;
+}
+
+body[data-theme="light"] .bg-ink-800 {
+  background-color: #edf2f7 !important;
+}
+
+body[data-theme="light"] .bg-ink-700 {
+  background-color: #d9e2ee !important;
+}
+
+body[data-theme="light"] .text-mist-50,
+body[data-theme="light"] .text-mist-200 {
+  color: #172033 !important;
+}
+
+body[data-theme="light"] .text-mist-400 {
+  color: #55657a !important;
+}
+
+body[data-theme="light"] .border-ink-700,
+body[data-theme="light"] .border-ink-600 {
+  border-color: #c8d4e2 !important;
+}
+
+body[data-theme="light"] .divide-ink-700 > * + * {
+  border-color: #c8d4e2 !important;
+}
+
+body[data-theme="light"] .text-amber {
+  color: #9a5a1c !important;
+}
+
+:focus-visible {
+  outline: 2px solid #7dd3c0;
+  outline-offset: 2px;
+}
+/* second version  */
+
+
+/* =========================================
+   FLOATING PAGE NAVIGATOR
+   ========================================= */
+
+.page-navigator {
+  position: fixed;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+
+  z-index: 45;
+
+  width: 32px;
+
+  display: flex;
+  justify-content: center;
+
+  opacity: 0.85;
+
+  transition:
+    width 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.page-navigator:hover {
+  width: 270px;
+  opacity: 1;
+}
+
+/* =========================================
+   NAVIGATOR BACKGROUND
+   ========================================= */
+
+.page-navigator-lines {
+  width: 32px;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 3px;
+
+  padding: 8px 5px;
+
+  border-radius: 16px;
+
+  background: transparent;
+
+  transition:
+    width 0.2s ease,
+    padding 0.2s ease,
+    background-color 0.2s ease;
+}
+
+/* Expanded background on hover */
+
+.page-navigator:hover .page-navigator-lines {
+  width: 270px;
+
+  padding: 10px;
+
+  background-color: #303030;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* =========================================
+   NAVIGATOR ITEM
+   ========================================= */
+
+.page-navigator-item {
+  position: relative;
+
+  width: 100%;
+  height: 16px;
+
+  display: flex;
+  align-items: center;
+
+  padding: 0;
+
+  border: 0;
+
+  background: transparent;
+
+  cursor: pointer;
+
+  border-radius: 8px;
+
+  transition:
+    height 0.2s ease,
+    background-color 0.15s ease;
+}
+
+/* Expanded items */
+
+.page-navigator:hover .page-navigator-item {
+  height: 34px;
+
+  padding: 0 8px;
+}
+
+.page-navigator-item:hover {
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+/* =========================================
+   SMALL LINE
+   ========================================= */
+
+.page-navigator-line {
+  display: block;
+
+  width: 20px;
+  height: 3px;
+
+  flex-shrink: 0;
+
+  border-radius: 999px;
+
+  background-color: #64748b;
+
+  transition:
+    width 0.15s ease,
+    background-color 0.15s ease;
+}
+
+/* Active line */
+
+.page-navigator-item.active .page-navigator-line {
+  width: 25px;
+
+  background-color: #edf1f5;
+}
+
+/* Hover line */
+
+.page-navigator-item:hover .page-navigator-line {
+  width: 25px;
+
+  background-color: #94a3b8;
+}
+
+/* Active + dragging */
+
+.page-navigator-dragging
+  .page-navigator-item.active
+  .page-navigator-line {
+  background-color: #7dd3c0;
+}
+
+/* =========================================
+   SECTION LABEL
+   ========================================= */
+
+.page-navigator-label {
+  max-width: 0;
+
+  margin-left: 0;
+
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  opacity: 0;
+
+  color: #edf1f5;
+
+  font-family: var(--font-plex-sans);
+
+  font-size: 13px;
+  font-weight: 500;
+
+  transition:
+    max-width 0.2s ease,
+    margin-left 0.2s ease,
+    opacity 0.15s ease;
+}
+
+/* Show labels when hovering */
+
+.page-navigator:hover .page-navigator-label {
+  max-width: 210px;
+
+  margin-left: 12px;
+
+  opacity: 1;
+}
+
+/* Active section label */
+
+.page-navigator-item.active .page-navigator-label {
+  font-weight: 600;
+}
+
+/* =========================================
+   LIGHT MODE
+   ========================================= */
+
+body[data-theme="light"]
+  .page-navigator:hover
+  .page-navigator-lines {
+  background-color: #e2e5e9;
+
+  box-shadow:
+    0 8px 25px rgba(0, 0, 0, 0.15),
+    0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+body[data-theme="light"]
+  .page-navigator-label {
+  color: #172033;
+}
+
+body[data-theme="light"]
+  .page-navigator-item:hover {
+  background-color: rgba(0, 0, 0, 0.06);
+}
+
+body[data-theme="light"]
+  .page-navigator-item .page-navigator-line {
+  background-color: #94a3b8;
+}
+
+body[data-theme="light"]
+  .page-navigator-item.active
+  .page-navigator-line {
+  background-color: #172033;
+}
+
+/* =========================================
+   MOBILE
+   ========================================= */
+
+@media (max-width: 768px) {
+  .page-navigator {
+    right: 6px;
+  }
+
+  .page-navigator:hover {
+    width: 230px;
+  }
+
+  .page-navigator:hover .page-navigator-lines {
+    width: 230px;
+  }
+}

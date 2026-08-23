@@ -1,0 +1,19 @@
+fastapi==0.115.0
+uvicorn[standard]==0.32.0
+httpx==0.27.2
+pydantic>=2.11.7
+pydantic-settings==2.6.0
+python-dotenv==1.0.1
+supabase==2.31.0
+youtube-transcript-api==1.2.4
+textstat==0.7.13
+numpy==2.2.6
+
+# sentence-transformers pulls in torch. The default PyPI wheel bundles full
+# CUDA support and can be 4-5GB — massive overkill for a CPU-only embedding
+# model like this one. Strongly recommended: install a CPU-only torch build
+# FIRST, then this file, e.g.:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+#   pip install -r requirements.txt
+# See the README for the full explanation.
+sentence-transformers>=3.0.0
