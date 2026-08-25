@@ -19,6 +19,7 @@ and removed the old static `get_transcript()` method that a lot of older
 tutorials still show.
 """
 import asyncio
+import logging
 from typing import List
 
 from youtube_transcript_api import (
@@ -38,6 +39,8 @@ from app.db.client import get_supabase
 THROTTLE_SECONDS = 1.0
 
 _ytt_api = YouTubeTranscriptApi()
+
+logger = logging.getLogger(__name__)
 
 
 def _get_cached_transcript(video_id: str) -> dict | None:
@@ -70,15 +73,26 @@ def _fetch_one_live(video_id: str) -> dict:
     except VideoUnavailable:
         return {"status": "unavailable", "error_message": "Video is unavailable."}
     except (IpBlocked, RequestBlocked) as exc:
-        # The production risk flagged in the README: an infrastructure
-        # problem, not a fact about the video, so this is NOT cached as
-        # permanently unavailable — it's safe and correct to retry later.
+        logger.error(
+        "YouTube transcript blocked for video %s: %s",
+        video_id,
+        exc,
+    )
+
         return {
-            "status": "error",
-            "error_message": f"{type(exc).__name__}: blocked by YouTube. Safe to retry later.",
+        "status": "error",
+        "error_message": f"{type(exc).__name__}: blocked by YouTube. Safe to retry later.",
         }
-    except Exception as exc:  # noqa: BLE001 — last-resort catch; this is an unofficial API
-        return {"status": "error", "error_message": f"{type(exc).__name__}: {exc}"}
+    except Exception as exc:
+        logger.exception(
+        "Unexpected transcript error for video %s",
+        video_id,
+    )
+
+        return {
+        "status": "error",
+        "error_message": f"{type(exc).__name__}: {exc}",
+        }
 
     full_text = " ".join(snippet.text for snippet in fetched)
     return {

@@ -304,6 +304,12 @@ export default function HomePage() {
                 }
               />
             </div>
+            <div ref={sectionRefs.transcript}>
+              <TranscriptPanel
+                videos={studyMaterialVideos}
+                onStatusUpdate={setTranscriptStatus}
+              />
+            </div>
 
             <div ref={sectionRefs.study}>
               <StudyMaterialsPanel
@@ -325,12 +331,7 @@ export default function HomePage() {
                 recommendations={recommendations}
               />
             </div>
-            <div ref={sectionRefs.transcript}>
-              <TranscriptPanel
-                videos={studyMaterialVideos}
-                onStatusUpdate={setTranscriptStatus}
-              />
-            </div>
+        
             <div ref={sectionRefs.analysis}>
               <AnalysisPanel
                 videos={studyMaterialVideos}
