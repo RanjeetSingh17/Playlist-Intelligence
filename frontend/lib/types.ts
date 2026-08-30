@@ -43,6 +43,8 @@ export interface TranscriptFetchSummary {
   cached_hits: number;
   results: TranscriptResult[];
   truncated: boolean;
+  stopped_early: boolean;
+  skipped_video_ids: string[];
 }
 
 export type DifficultyLabel = "easy" | "medium" | "hard" | "unknown";

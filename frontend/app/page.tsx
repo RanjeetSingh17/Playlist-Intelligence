@@ -70,10 +70,10 @@ export default function HomePage() {
 
   const navigationSections = [
     { name: "Summary", ref: sectionRefs.summary },
+    { name: "Transcript", ref: sectionRefs.transcript },
     { name: "Study Materials", ref: sectionRefs.study },
     { name: "Videos", ref: sectionRefs.videos },
     { name: "Schedule", ref: sectionRefs.schedule },
-    { name: "Transcript", ref: sectionRefs.transcript },
     { name: "Analysis", ref: sectionRefs.analysis },
     { name: "Duplicates", ref: sectionRefs.duplicates },
     { name: "Recommendations", ref: sectionRefs.recommendations },

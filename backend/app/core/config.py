@@ -2,7 +2,7 @@
 Application configuration, loaded from environment variables (.env file).
 """
 import json
-from typing import List
+from typing import List, Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -20,6 +20,8 @@ class Settings(BaseSettings):
     SUPABASE_KEY: str = ""
     GROQ_API_KEY: str = ""
     ALLOWED_ORIGINS: str = "http://localhost:3000"
+    WEBSHARE_PROXY_USERNAME: Optional[str] = None
+    WEBSHARE_PROXY_PASSWORD: Optional[str] = None
 
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 

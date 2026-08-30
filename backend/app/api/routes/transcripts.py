@@ -1,18 +1,10 @@
 from fastapi import APIRouter, HTTPException
 
-from app.core.config import MissingConfigurationError
-from app.models.schemas import (
-    TranscriptFetchRequest,
-    TranscriptFetchSummary,
-    TranscriptResult,
-)
+from app.models.schemas import TranscriptFetchRequest, TranscriptFetchSummary, TranscriptResult
 from app.services.transcripts import fetch_transcripts_for_videos
 
 router = APIRouter()
 
-# Keeps a single request bounded — the frontend calls this in smaller
-# batches anyway so it can show incremental progress, but the backend
-# enforces its own ceiling regardless of what a client sends.
 MAX_VIDEOS_PER_REQUEST = 100
 
 
@@ -22,10 +14,8 @@ async def fetch_transcripts_route(payload: TranscriptFetchRequest):
         raise HTTPException(status_code=400, detail="video_ids must not be empty.")
 
     video_ids = payload.video_ids[:MAX_VIDEOS_PER_REQUEST]
-    try:
-        raw_results = await fetch_transcripts_for_videos(video_ids)
-    except MissingConfigurationError as exc:
-        raise HTTPException(status_code=503, detail=str(exc)) from exc
+    fetch_result = await fetch_transcripts_for_videos(video_ids)
+    raw_results = fetch_result["results"]
 
     results = [
         TranscriptResult(
@@ -47,4 +37,6 @@ async def fetch_transcripts_route(payload: TranscriptFetchRequest):
         cached_hits=sum(1 for r in results if r.cached),
         results=results,
         truncated=len(payload.video_ids) > MAX_VIDEOS_PER_REQUEST,
+        stopped_early=fetch_result["stopped_early"],
+        skipped_video_ids=fetch_result["skipped_video_ids"],
     )

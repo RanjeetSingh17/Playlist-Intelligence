@@ -65,6 +65,8 @@ class TranscriptFetchSummary(BaseModel):
     cached_hits: int
     results: List[TranscriptResult]
     truncated: bool
+    stopped_early: bool = False
+    skipped_video_ids: List[str] = Field(default_factory=list)
 
 
 class DifficultyScore(BaseModel):
