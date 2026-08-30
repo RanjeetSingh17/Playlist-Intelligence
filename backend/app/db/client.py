@@ -13,5 +13,6 @@ from app.core.config import settings
 @lru_cache
 def get_supabase() -> Client:
     return create_client(
-        settings.require("SUPABASE_URL"), settings.require("SUPABASE_KEY")
-    )
+    settings.require("SUPABASE_URL"),
+    settings.require("SUPABASE_SERVICE_ROLE_KEY"),
+)

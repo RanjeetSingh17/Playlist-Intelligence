@@ -17,7 +17,7 @@ class Settings(BaseSettings):
     # while integration endpoints return a clear 503 only when used.
     YOUTUBE_API_KEY: str = ""
     SUPABASE_URL: str = ""
-    SUPABASE_KEY: str = ""
+    SUPABASE_SERVICE_ROLE_KEY: str = ""
     GROQ_API_KEY: str = ""
     ALLOWED_ORIGINS: str = "http://localhost:3000"
     WEBSHARE_PROXY_USERNAME: Optional[str] = None
