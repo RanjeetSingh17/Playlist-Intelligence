@@ -2,9 +2,14 @@
 Application configuration, loaded from environment variables (.env file).
 """
 import json
+from pathlib import Path
 from typing import List, Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+# Resolve the .env file relative to this file's location (backend/.env)
+# so the path is correct regardless of where the server process is launched.
+_ENV_FILE = Path(__file__).resolve().parents[2] / ".env"
 
 
 class MissingConfigurationError(RuntimeError):
@@ -23,7 +28,7 @@ class Settings(BaseSettings):
     WEBSHARE_PROXY_USERNAME: Optional[str] = None
     WEBSHARE_PROXY_PASSWORD: Optional[str] = None
 
-    model_config = SettingsConfigDict(env_file=".env", extra="ignore")
+    model_config = SettingsConfigDict(env_file=_ENV_FILE, extra="ignore")
 
     @property
     def allowed_origins_list(self) -> List[str]:

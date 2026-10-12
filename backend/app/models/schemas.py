@@ -219,3 +219,22 @@ class WatchTimeResponse(BaseModel):
     watch_time_by_speed: List[WatchTimeBreakdown]
     start_position: int
     end_position: int
+
+
+# Chat / Q&A schemas
+class ChatMessage(BaseModel):
+    role: Literal["user", "assistant"]
+    content: str
+
+
+class ChatRequest(BaseModel):
+    video_id: str = Field(..., description="Video ID to chat about — must have a cached transcript")
+    messages: List[ChatMessage] = Field(
+        ...,
+        min_length=1,
+        description="Conversation history; the last message must have role='user'",
+    )
+
+
+class ChatResponse(BaseModel):
+    reply: str

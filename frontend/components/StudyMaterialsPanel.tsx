@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { generateStudyMaterials } from "@/lib/api";
 import { StudyMaterialsResponse, VideoItem } from "@/lib/types";
+import VideoChatPanel from "@/components/VideoChatPanel";
 
 interface Props {
   videos: VideoItem[];
@@ -148,6 +149,12 @@ export default function StudyMaterialsPanel({ videos }: Props) {
               })}
             </div>
           </div>
+
+          {/* Chat panel — always visible once materials are generated */}
+          <VideoChatPanel
+            videoId={selectedVideoId}
+            videoTitle={videos.find((v) => v.video_id === selectedVideoId)?.title ?? selectedVideoId}
+          />
 
           {/* <div>
             <h4 className="mb-2 font-display text-xs font-semibold uppercase tracking-wide text-mist-400">

@@ -132,3 +132,13 @@ export interface WatchTimeResponse {
   start_position: number;
   end_position: number;
 }
+
+// Chat / Q&A
+export interface ChatMessage {
+  role: "user" | "assistant";
+  content: string;
+}
+
+export interface ChatResponse {
+  reply: string;
+}

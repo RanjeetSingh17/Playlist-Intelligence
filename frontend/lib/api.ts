@@ -1,5 +1,7 @@
 import {
   AnalyzeComputeResponse,
+  ChatMessage,
+  ChatResponse,
   DuplicatesResponse,
   PlaylistImportResponse,
   RecommendationsResponse,
@@ -170,6 +172,24 @@ export async function getWatchTime(
   if (!response.ok) {
     const body = await response.json().catch(() => null);
     throw new Error(body?.detail ?? `Watch time calculation failed (${response.status})`);
+  }
+
+  return response.json();
+}
+
+export async function chatWithVideo(
+  videoId: string,
+  messages: ChatMessage[]
+): Promise<ChatResponse> {
+  const response = await fetch(`${API_BASE_URL}/api/generate/chat`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ video_id: videoId, messages }),
+  });
+
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.detail ?? `Chat request failed (${response.status})`);
   }
 
   return response.json();

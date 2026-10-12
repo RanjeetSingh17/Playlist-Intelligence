@@ -187,3 +187,69 @@ async def _call_groq(
 
 async def generate_study_materials(video_title: str, transcript_text: str) -> dict:
     return await _call_groq(video_title, transcript_text)
+
+
+CHAT_SYSTEM_PROMPT_TEMPLATE = (
+    "You are a helpful study assistant. The user is watching a YouTube video titled \"{title}\".\n\n"
+    "Below is the full transcript of that video. Use it as your primary source of truth. "
+    "Answer questions clearly and concisely based on the transcript. If something isn't covered "
+    "in the transcript, say so honestly rather than guessing.\n\n"
+    "--- TRANSCRIPT START ---\n{transcript}\n--- TRANSCRIPT END ---"
+)
+
+
+async def chat_with_video(
+    video_title: str,
+    transcript_text: str,
+    messages: list[dict],
+) -> str:
+    """Send a multi-turn conversation to Groq with the transcript as context.
+
+    `messages` is a list of {"role": "user"|"assistant", "content": str} dicts
+    representing the full conversation so far (last entry must be role=user).
+    Returns the assistant's reply as a plain string.
+    """
+    system_content = CHAT_SYSTEM_PROMPT_TEMPLATE.format(
+        title=video_title,
+        transcript=_truncate_transcript(transcript_text, max_words=1500),
+    )
+
+    payload = {
+        "model": MODEL_NAME,
+        "max_completion_tokens": 1000,
+        "messages": [
+            {"role": "system", "content": system_content},
+            *messages,
+        ],
+    }
+    headers = {
+        "Authorization": f"Bearer {settings.require('GROQ_API_KEY')}",
+        "Content-Type": "application/json",
+    }
+
+    await _throttle()
+
+    async with httpx.AsyncClient(timeout=60.0) as client:
+        response = None
+        for attempt in range(3):
+            response = await client.post(GROQ_API_URL, json=payload, headers=headers)
+
+            if response.status_code == 429:
+                retry_after = float(response.headers.get("retry-after", 10))
+                if attempt == 2:
+                    raise GroqRateLimitedError(
+                        f"Groq rate-limited this request after {attempt + 1} attempts. "
+                        f"Try again in about {int(retry_after)}s."
+                    )
+                await asyncio.sleep(retry_after)
+                continue
+
+            break
+
+        if response.status_code != 200:
+            raise GroqAPIError(f"Groq API error ({response.status_code}): {response.text[:300]}")
+
+        data = response.json()
+
+    return data["choices"][0]["message"]["content"].strip()
+
